@@ -1,0 +1,108 @@
+Summary: OpenStack Glance
+Name: openstack-glance
+Version: @GLANCE_VERSION@
+Release: @BUILD_NUMBER@
+License: ASL 2.0
+Vendor: OpenStack, repackaged by Citrix Systems, Inc.
+Group: Applications/System
+URL: https://launchpad.net/glance
+Source0: %{name}-%{version}-%{release}.tar.gz
+Source2: %{name}-api.init
+Source4: %{name}-registry.init
+Source5: glance-api.conf
+Source6: glance-registry.conf
+Source7: logging.conf
+Source8: glance-prefetcher.conf
+Source9: glance-pruner.conf
+Source10: glance-reaper.conf
+Source11: glance-scrubber.conf
+Source30: %{name}-common.sh
+
+BuildRoot: %{_tmppath}/%{name}
+BuildArch: noarch
+
+Requires(pre): shadow-utils
+Requires(post): chkconfig
+Requires(preun): chkconfig
+
+%global _datarootdir /usr/share
+%global _sharedstatedir /var/lib
+%global python_sitelib /usr/lib/python2.6/site-packages
+
+%description
+
+%prep
+%setup -q -n %{name}-%{version}
+sed -i -e "s/swift_store_create_container_on_put = False/swift_store_create_container_on_put = True/g" %{SOURCE5}
+
+%build
+%{__python} setup.py build
+
+%install
+rm -rf %{buildroot}
+%{__python} setup.py install -O1 --root %{buildroot}
+rm -rf %{buildroot}%{python_sitelib}/tests
+
+install -p -d -m 755 %{buildroot}%{_sharedstatedir}/glance/images
+install -p -d -m 755 %{buildroot}%{_localstatedir}/run/glance
+install -d -m 755 %{buildroot}%{_localstatedir}/log/glance
+
+install -p -D -m 755 %{SOURCE2} %{buildroot}%{_initrddir}/%{name}-api
+install -p -D -m 755 %{SOURCE4} %{buildroot}%{_initrddir}/%{name}-registry
+install -p -D -m 755 %{SOURCE30} %{buildroot}%{_initrddir}/%{name}-common.sh
+
+install -p -D -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}/glance/glance-api.conf
+install -p -D -m 644 %{SOURCE6} %{buildroot}%{_sysconfdir}/glance/glance-registry.conf
+install -p -D -m 644 %{SOURCE7} %{buildroot}%{_sysconfdir}/glance/logging.conf
+
+%clean
+rm -rf %{buildroot}
+
+%pre
+getent group glance >/dev/null || groupadd -r glance
+getent passwd glance >/dev/null || \
+    useradd -r -g glance -d %{_sharedstatedir}/glance -s /sbin/nologin \
+            -c "OpenStack Glance Daemons" glance
+
+%post
+/sbin/chkconfig --add %{name}-api
+/sbin/chkconfig --add %{name}-registry
+
+%preun
+if [ $1 = 0 ] ; then
+    /sbin/service %{name}-api stop >/dev/null 2>&1
+    /sbin/chkconfig --del %{name}-api
+
+    /sbin/service %{name}-registry stop >/dev/null 2>&1
+    /sbin/chkconfig --del %{name}-registry
+fi
+
+%files
+%defattr(-,root,root,-)
+%config(noreplace) %{_sysconfdir}/glance/glance-api.conf
+%config(noreplace) %{_sysconfdir}/glance/glance-registry.conf
+%config(noreplace) %{_sysconfdir}/glance/logging.conf
+%{_initrddir}/%{name}-api
+%{_initrddir}/%{name}-registry
+%{_bindir}/glance-api
+%{_bindir}/glance-registry
+%{_bindir}/glance-control
+%{_bindir}/glance-manage
+%{_bindir}/glance-upload
+%{_bindir}/glance
+%{_bindir}/glance-cache-prefetcher
+%{_bindir}/glance-cache-pruner
+%{_bindir}/glance-cache-reaper
+%{_bindir}/glance-scrubber
+%{python_sitelib}/glance
+%{python_sitelib}/glance-%{version}-*.egg-info
+%{_initrddir}/%{name}-common.sh
+
+%dir %attr(0755, glance, root) %{_localstatedir}/log/glance
+
+%defattr(-,glance,root,-)
+%dir %{_localstatedir}/run/glance
+
+%defattr(-,glance,glance,-)
+%dir %{_sharedstatedir}/glance
+%dir %{_sharedstatedir}/glance/images

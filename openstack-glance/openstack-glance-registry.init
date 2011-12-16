@@ -1,0 +1,19 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          openstack-glance-registry
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Stop:      0 1 6
+# Short-Description: Glance REGISTRY server
+# Description:       REGISTRY server for Glance.
+### END INIT INFO
+
+# openstack-glance-registry: Glance REGISTRY  server
+#
+# chkconfig: - 90 03
+# description: REGISTRY server for Glance.
+
+name="glance-registry"
+
+. /etc/rc.d/init.d/openstack-glance-common.sh

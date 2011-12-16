@@ -1,0 +1,19 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          openstack-glance-api
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Stop:      0 1 6
+# Short-Description: Glance API server
+# Description:       API server for Glance.
+### END INIT INFO
+
+# openstack-glance-api: Glance API server
+#
+# chkconfig: - 90 03
+# description: API server for Glance.
+
+name="glance-api"
+
+. /etc/rc.d/init.d/openstack-glance-common.sh
