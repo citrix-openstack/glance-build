@@ -88,11 +88,12 @@ fi
 %{_bindir}/glance-registry
 %{_bindir}/glance-control
 %{_bindir}/glance-manage
-%{_bindir}/glance-upload
 %{_bindir}/glance
+%{_bindir}/glance-cache-cleaner
+%{_bindir}/glance-cache-manage
 %{_bindir}/glance-cache-prefetcher
 %{_bindir}/glance-cache-pruner
-%{_bindir}/glance-cache-reaper
+%{_bindir}/glance-cache-queue-image
 %{_bindir}/glance-scrubber
 %{python_sitelib}/glance
 %{python_sitelib}/glance-%{version}-*.egg-info
