@@ -3,21 +3,12 @@ IMPORT_BRANDING := yes
 ifdef B_BASE
 include $(B_BASE)/common.mk
 include $(B_BASE)/rpmbuild.mk
+GLANCE_UPSTREAM := /repos/glance
 else
 COMPONENT := glance
 include ../../mk/easy-config.mk
+GLANCE_UPSTREAM := ../glance
 endif
-
-REPO := $(call hg_loc,glance)
-VPX_REPO := $(call hg_loc,os-vpx)
-
-
-LP_GLANCE_BRANCH ?= lp:glance
-
-
-GLANCE_UPSTREAM := $(shell test -d /repos/glance && \
-			   readlink -f /repos/glance || \
-			   readlink -f $(REPO)/upstream)
 
 
 GLANCE_VERSION := $(shell sh -c "(cat $(GLANCE_UPSTREAM)/glance/version.py; \
@@ -94,10 +85,6 @@ $(EPEL_REPOMD_XML): $(wildcard $(EPEL_RPM_DIR)/%)
 	$(call mkdir_clean,$(EPEL_YUM_DIR))
 	cp -s $(EPEL_RPM_DIR)/* $(EPEL_YUM_DIR)
 	createrepo $(EPEL_YUM_DIR)
-
-.PHONY: rebase
-rebase:
-	@sh $(VPX_REPO)/rebase.sh $(LP_GLANCE_BRANCH) $(REPO)/upstream
 
 .PHONY: doc-html
 doc-html:
