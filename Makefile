@@ -3,10 +3,12 @@ IMPORT_BRANDING := yes
 ifdef B_BASE
 include $(B_BASE)/common.mk
 include $(B_BASE)/rpmbuild.mk
+REPO := /repos/glance-build
 GLANCE_UPSTREAM := /repos/glance
 else
 COMPONENT := glance
 include ../../mk/easy-config.mk
+REPO := .
 GLANCE_UPSTREAM := ../glance
 endif
 
