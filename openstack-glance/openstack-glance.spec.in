@@ -16,6 +16,8 @@ Source8: glance-prefetcher.conf
 Source9: glance-pruner.conf
 Source10: glance-reaper.conf
 Source11: glance-scrubber.conf
+Source12: glance-api-paste.ini
+Source13: glance-registry-paste.ini
 Source30: %{name}-common.sh
 
 BuildRoot: %{_tmppath}/%{name}
@@ -55,6 +57,9 @@ install -p -D -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}/glance/glance-api.con
 install -p -D -m 644 %{SOURCE6} %{buildroot}%{_sysconfdir}/glance/glance-registry.conf
 install -p -D -m 644 %{SOURCE7} %{buildroot}%{_sysconfdir}/glance/logging.conf
 
+install -p -D -m 644 %{SOURCE12} %{buildroot}%{_sysconfdir}/glance/glance-api-paste.ini
+install -p -D -m 644 %{SOURCE13} %{buildroot}%{_sysconfdir}/glance/glance-registry-paste.ini
+
 %clean
 rm -rf %{buildroot}
 
@@ -81,6 +86,8 @@ fi
 %defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/glance/glance-api.conf
 %config(noreplace) %{_sysconfdir}/glance/glance-registry.conf
+%config(noreplace) %{_sysconfdir}/glance/glance-api-paste.ini
+%config(noreplace) %{_sysconfdir}/glance/glance-registry-paste.ini
 %config(noreplace) %{_sysconfdir}/glance/logging.conf
 %{_initrddir}/%{name}-api
 %{_initrddir}/%{name}-registry
