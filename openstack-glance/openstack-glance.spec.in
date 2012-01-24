@@ -60,6 +60,8 @@ install -p -D -m 644 %{SOURCE7} %{buildroot}%{_sysconfdir}/glance/logging.conf
 install -p -D -m 644 %{SOURCE12} %{buildroot}%{_sysconfdir}/glance/glance-api-paste.ini
 install -p -D -m 644 %{SOURCE13} %{buildroot}%{_sysconfdir}/glance/glance-registry-paste.ini
 
+install -p -D -m 644 etc/policy.json %{buildroot}%{_sysconfdir}/glance/policy.json
+
 %clean
 rm -rf %{buildroot}
 
@@ -89,6 +91,7 @@ fi
 %config(noreplace) %{_sysconfdir}/glance/glance-api-paste.ini
 %config(noreplace) %{_sysconfdir}/glance/glance-registry-paste.ini
 %config(noreplace) %{_sysconfdir}/glance/logging.conf
+%config(noreplace) %{_sysconfdir}/glance/policy.json
 %{_initrddir}/%{name}-api
 %{_initrddir}/%{name}-registry
 %{_bindir}/glance-api
